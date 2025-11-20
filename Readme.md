@@ -85,10 +85,17 @@ environment.
     /bin/bash
 ```
 
+Since the run command registers the name "patina-dev" with Docker, a simplified form of the run command can be used once
+the initial run has been performed.
+
+```shell
+  docker start -ai "patina-dev"
+```
+
 NOTE 1: The ```[MY_WORKSPACE_PATH]``` string needs to be updated to point to the directory that contains the repository you
 plan to compile. And the other command line parameters were created from the data in the 
-[devcontainer json file](https://github.com/OpenDevicePartnership/patina-qemu/blob/refs/heads/main/.devcontainer/devcontainer.json)
-that the CI build uses to execute the container.
+[Dev Container](https://github.com/OpenDevicePartnership/patina-qemu/blob/refs/heads/main/.devcontainer/devcontainer.json)
+JSON file that the CI build uses to execute the container.
 
 NOTE 2: If running on Windows, it is best to clone the repository inside WSL prior to launching the container.  From inside WSL,
 the Windows drives can be accessed using the path ```/mnt/c``` for the C drive, ```/mnt/d``` for the D drive, etc.  And from
@@ -117,88 +124,12 @@ can be run without any specific toolchain tags
   stuart_build -c Platforms/QemuSbsaPkg/PlatformBuild.py --flashrom
 ```
 
-The current build script pulls a pre-compiled Patina DXE Core .efi driver from a nuget feed, the .FDF file points
-to that .efi binary to add it into the final firmware device image, and the --flashrom option will launch the FW and boot
-into the UEFI shell.
+The sample Patina DXE Core driver is included in the final .FD file by having the script pull the pre-compiled binary from
+a nuget feed and pointing the DXE Core entry in the .FDF file to the binary.  The --flashrom option for stuart_build will
+launch the firmware and use the Patina DXE Core driver dispatcher to boot into the UEFI shell.
 
 For other options on building and detailed notes on the environment, please refer to:
 
-- [Advanced Compilation](https://???) page for details.
-- [WinDbg + QEMU + Patina UEFI - Debugging Guide](Platforms/Docs/Common/windbg-qemu-uefi-debugging.md)
-- [WinDbg + QEMU + Patina UEFI + Windows OS - Debugging Guide](Platforms/Docs/Common/windbg-qemu-windows-debugging.md)
-
-
-
-
-
-## Advanced Usage
-
-### Insert a new DXE Core Driver into the Build
-
-This repository was originally created to demonstrate using Patina modules with an emphasis on ingesting the [Patina
-DXE Core](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu).  To modify the build to consume a new DXE
-Core binary instead of the pre-built .EFI file from the nuget feed, there are several methods supported.
-
-#### Update the Platform FDF File
-
-The easiest way to inject a new Patina DXE Core driver is to update the platform FDF file (`/Platforms/QemuQ35Pkg/QemuQ35Pkg.fdf`
-or `/Platforms/QemuQ35Pkg/QemuQ35Pkg.fdf`) to point to the new binary driver file as typically done in UEFI builds
-that ingest pre-compiled binaries.  Modify the `SECTION` definition in the `DXE_CORE` file declaration as follows:
-
-```cmd
-FILE DXE_CORE = 23C9322F-2AF2-476A-BC4C-26BC88266C71 {
-  SECTION PE32 = "<new dxe core file path>"
-  SECTION UI = "DxeCore"
-}
-```
-
-This repository's platform FDF files support defining a build variable to override the default binary without needing
-to modify the FDF file.  This can be set from the stuart_build command line by defining `BLD_*_DXE_CORE_BINARY_OVERRIDE':
-
-```cmd
-stuart_build -c Platforms\QemuQ35Pkg\PlatformBuild.py --FLASHROM BLD_*_DXE_CORE_BINARY_OVERRIDE="<new dxe core file path>"
-```
-
-#### Patching a Pre-Built UEFI Firmware Device Image
-
-If multiple iterations of the DXE core are to be tested, the fastest way to integrate each to a bootable FD image is
-using the [Patina FW Patcher](https://github.com/OpenDevicePartnership/patina-fw-patcher). This tool will open an
-existing UEFI FD binary, find and replace the current DXE Core driver with a new file, and launch QEMU with the patched
-ROM image.
-
-A [build_and_run_rust_binary.py](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/build_and_run_rust_binary.py)
-script is provided in the root of this repository to perform all steps necessary to compile the Patina DXE core driver,
-call the patcher, and start QEMU.  For more details, run it with the `--help` command line parameter:
-
-```cmd
-python build_and_run_rust_binary.py --help
-```
-
-- Note 1: This tool is not a general FW patcher to be used on any UEFI FD image.  It relies on specific features
-  implemented in this UEFI build.
-- Note 2: Because this tool is patching an existing QEMU ROM image, only changes to the Rust DXE Core code will be
-  merged.  Any changes to the C code will require running a full stuart_build process to build a new ROM image.
-- Note 3: The tool can be enhanced to patch more than the Patina DXE Core.  If there is interest in new features,
-  please start a discussion in the tool's repo [discussions](https://github.com/OpenDevicePartnership/patina-fw-patcher/discussions/categories/q-a)
-  area.
-
-### Using a Custom QEMU Installation
-
-By default, this repository automates the process of choosing a known working QEMU version and downloading that version
-into the workspace for you. If you want to use a custom QEMU installation, you can do so by passing the path to the
-Stuart build command with the`QEMU_PATH` argument. For example:
-
-```cmd
-stuart_build -c Platforms/QemuQ35Pkg/PlatformBuild.py --flashonly QEMU_PATH="<path to qemu executable>"
-```
-
-You can also specify the directory where the QEMU binary is located by passing the `QEMU_DIR` argument. For example:
-
-```cmd
-stuart_build -c Platforms/QemuQ35Pkg/PlatformBuild.py --flashonly QEMU_DIR="<path to qemu bin directory>"
-```
-
-### Self Certification Tests
-
-Refer to the [Self Certification Test](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/SelfCertifcationTest.md)
-documentation for information on how to configure and run the [Self Certification Tests (SCTs)](https://github.com/tianocore/tianocore.github.io/wiki/UEFI-SCT).
+- [XXXX](https://???) - Page 1
+- [XXXX](https://???) - Page 2
+- [XXXX](https://???) - Page 3
