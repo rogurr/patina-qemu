@@ -1,25 +1,18 @@
-# Demonstration of Using Patina in a QEMU Platform UEFI Build
+# Demonstration of Patina in a QEMU UEFI Platform Build
 
-This repository demonstrates how to integrate code from the [Patina](https://github.com/OpenDevicePartnership/patina/blob/main/docs/src/patina.md)
-Boot Firmware Project into a UEFI platform build.  It contains a permanent fork of [OvmfPkg in edk2](https://github.com/tianocore/edk2/tree/HEAD/OvmfPkg)
-to allow maintaining the code within the ownership of the Patina project and optimizing for Rust UEFI development.  And
-it is meant to be a "first stop" for developers exploring how to integrate Patina code into a UEFI platform.
-
-The following are related links that may be useful:
+This repository demonstrates how to integrate code from the Open Device Partnership Patina Boot Firmware Project into
+a UEFI platform build. It contains a permanent fork of [OvmfPkg in edk2](https://github.com/tianocore/edk2/tree/HEAD/OvmfPkg)
+to allow maintaining the code within the ownership of ODP and is meant to be a "first stop" for developers exploring
+Patina Boot Firmware.
 
 - [ODP](https://opendevicepartnership.org/) - Open Device Partnership web page
-- [Patina Documentation](https://opendevicepartnership.github.io/patina/) - Primary Patina documentation web page
-  - [Patina Requirements](https://opendevicepartnership.github.io/patina/integrate/patina_dxe_core_requirements.html) -
-  Patina requirements in comparison to EDK2.
-  - [Patina Component Model](https://opendevicepartnership.github.io/patina/component/getting_started.html) - Overview
-  of the component model used by Patina
-- [ODP GitHub](https://github.com/OpenDevicePartnership) - Open Device Partnership GitHub page
-  - [Patina Code Repository](https://github.com/OpenDevicePartnership/patina) - GitHub repository for the Patina development
-  kit
-  - [Sample Patina DXE Core](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) - Repository showcasing a
+  - [Patina Documentation](https://opendevicepartnership.github.io/patina/) - Patina Boot Firmware documentation web page
+- [ODP on GitHub](https://github.com/OpenDevicePartnership) - Open Device Partnership GitHub page
+  - [Patina on GitHub](https://github.com/OpenDevicePartnership/patina) - Repository containing the Patina Project code
+  - [Patina DXE Core QEMU on GitHub](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) - Repository showcasing a
   sample Patina DXE core driver that loads in QEMU
-  - [Sample QEMU UEFI](https://github.com/OpenDevicePartnership/patina-qemu) - Repository showcasing a sample UEFI build that
-  executes in QEMU and contains the sample Patina DXE Core driver (this repo)
+  - [Patina QEMU on GitHub](https://github.com/OpenDevicePartnership/patina-qemu) - Repository showcasing a sample UEFI build
+  that executes in QEMU and contains the sample Patina DXE Core driver (this repo)
 
 ## High-Level Overview of Rust Integration
 
