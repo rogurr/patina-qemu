@@ -10,55 +10,47 @@ the firmware device (FD) build process.
 each module specified in a DSC file.
 
 Option **(2)** is a viable solution and this repository has several examples, but the primary method to ingest the Patina
-DXE core is by using option **(1)** since it allows for a more natural development experience using only Rust tools and
+DXE core is by using option **(1)** since it allows for a more natural development experience using the Rust tools and
 processes, and it greatly simplifies the integration.
 
-## Option 1 Usage - Adding a DXE Core Driver .efi binary into the build
+## Integration Option 1
 
-The following list outlines the items and steps used by the GitHub actions to produce a bootable .FD image that includes
-the Patina DXE Core driver and can be executed in QEMU
+The preferred method to add a Rust based module into an EDK II build is to pre-compile the code to produce the module's
+.efi binary then add its file path to the platform .fdf file to be integrated when creating the firmware volumes and final
+firmware device file.
 
-1) The [Patina DXE Core](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) repository contains code to build
-a fully Rust based DXE core driver targeted toward either the SBSA or Q35 platform.
-2) That repository has a [Constant Integration](https://github.com/???) action that creates a stand-alone .efi DXE Core
-binary that is published to a nuget feed
-3) The [Patina QEMU UEFI](https://github.com/) repository (this repo) has a [Constant Integration](https://github.com/???)
-action that executes stuart_update which pulls the pre-compiled .efi DXE core driver from its nuget feed and places it in
-the tree.
-4) The [QemuSbsaPkg/QemuSbsaPkg.fdf](https://github.com/) and [QemuSbsaPkg/QemuSbsaPkg.fdf](https://github.com/) files contain
-an entry to define the pre-compiled binary to use instead of the typical line that instructs the build to use the binary
-produced when compiling modules in the .dsc file.
+The [Patina DXE Core QEMU](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) repository is an example of this
+process and contains code to build a fully Rust based DXE core driver targeted toward either the SBSA or Q35 platform.
+Its Constant Integration GitHub action creates a stand-alone .efi DXE Core binary that is published to a nuget feed that
+this repository can then use during its build.
 
-### Replacing the .efi Binary - Modify .fdf file
+This repo, the [Patina QEMU UEFI](https://github.com/) repository, has its own Constant Integration action to pull the
+nuget feed and extract the binary.  Then when compiling, the platform .fdf file points to the Patina DXE Core .efi binary
+to link it into the final firmware device file.
 
-If building this UEFI locally and you want to add a different .efi binary, the easiest method is to update the ```FILE DXE_CORE```
-section to point to the file you want to include and re-compile.  The .fdf files contain several lines to allow overrides
-and selecting nuget debug or release flavors which can all be replaced with the following sample entry.
+Both platform [QemuQ35Pkg.fdf](https://sadf) and [QemuQ35Pkg.fdf](https://sadf) files in this repository have a
+```[FV.RUST_DXE_CORE]``` firmware volume definition section that contains a single driver, the Patina DXE Core QEMU .efi
+binary. There are several 'if' statements to support multiple options, but the easiest method to inject a user built binary
+is to update the ```FILE DXE_CORE``` section to point directly to the newly built .efi binary and re-compile.
 
 ```text
   FILE DXE_CORE = 23C9322F-2AF2-476A-BC4C-26BC88266C71 {
-    SECTION PE32 = "<new dxe core file path>"
+    SECTION PE32 = "< new dxe core file path >"
     SECTION UI = "DxeCore"
   }
 ```
 
-### Replacing the .efi Binary - Define on command line
-
-Another option to replace the binary is to use the DXE_CORE_BINARY_OVERRIDE define that can be set at the command line
-to point to a new .efi binary without having to modify the .fdf file.
+The 'if' statements in that section allow support of defining the newly created .efi binary on the build command line.
+By setting the DXE_CORE_BINARY_OVERRIDE define to the new binary's file path, it will be included without having to modify
+the .fdf file.
 
 ```cmd
   stuart_build -c Platforms\QemuQ35Pkg\PlatformBuild.py --FLASHROM BLD_*_DXE_CORE_BINARY_OVERRIDE="<new dxe core file path>"
 ```
 
-### Replacing the .efi Binary - Patina FW Patcher
-
-And the 3 option to use a new binary is patching the .FD file created from the build process which can be useful if multiple
-iterations need to be tested.  The platform .fdf files place the DXE Core in it's own firmware volume which can be replaced
-after compilation by using the [Patina FW Patcher](https://github.com/OpenDevicePartnership/patina-fw-patcher) to open an
-existing UEFI FD binary, find and replace the current DXE Core driver, and launch QEMU with the patched ROM image.
-
-The [build_and_run_rust_binary.py](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/build_and_run_rust_binary.py)
+Or if multiple iterations of replacement and testing are needed, the Patina DXE Core binary was placed in its own firmware
+volume to allow supporting the [Patina FW Patcher](https://github.com/OpenDevicePartnership/patina-fw-patcher). The
+[build_and_run_rust_binary.py](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/build_and_run_rust_binary.py)
 script is provided in the root of this repository to perform all steps necessary to compile the Patina DXE core driver,
 call the patcher, and start QEMU.  For more details, run it with the `--help` command line parameter:
 
@@ -67,108 +59,35 @@ call the patcher, and start QEMU.  For more details, run it with the `--help` co
 ```
 
 Note that this tool is not a general FW patcher to be used on any UEFI FD image due to relying on specific features
-implemented in this UEFI build.  Because this tool is patching an existing QEMU ROM image, only changes to the Rust
-DXE Core code will be merged and any changes to the C code will require running a full stuart_build process.
+implemented in this UEFI build.  However if there is interest in adding new features, please start a discussion in the
+tool's repo [discussions](https://github.com/OpenDevicePartnership/patina-fw-patcher/discussions/categories/q-a) area.
 
-The tool can be enhanced to patch more than the Patina DXE Core.  If there is interest in new features, please start
-a discussion in the tool's repo [discussions](https://github.com/OpenDevicePartnership/patina-fw-patcher/discussions/categories/q-a)
-area.
+## Integration Option 2
 
+The [Tianocore EDK II](https://github.com/tianocore/edk2) environment does not currently support compiling Rust drivers
+without the end user updating and maintianing the build rules to handle the Rust toolchain.  This coupling of the EDK II
+build system with the Rust/Cargo build system introduces additional complexity that can be overcome, but proved to be
+too difficult to provide a solution in a simple and concise manor in this project.
 
+For instance trying to define a simple and straight forward approach for the Rust environment to ingest EDK II PCDs or
+for the EDK II environment to control Rust features proved difficult due to the number of possible ways to handle the
+task and the complexity in describing the chosen solution.  In addition, the complexity from co-integrating the Rust/Cargo
+build system with the EDK II build system leads to Rust source code being maintained in the C codebase which is not
+ideal due to language and tooling differences.
 
+If an end user does wish to explore using integration option 2, there are several benefits, one of which is allowing the
+transition from a C codebase to a Rust codebase in small incremental steps intead of an "all-or-nothing" approach.  Even
+though it is not the recommended method, this repository does have several examples of drivers that are written in Rust
+and compiled by the stuart_build process.  This doesn't provide the security benefits of a pure Rust based build, but it
+does allow for interim steps:
 
+- Modules written in Rust that link a Rust based library (aka crate)
+- Modules written in Rust that link a C based library
+- Modules written in C that link a Rust based library (aks crate producing cdecl apis)
+- Modules written in C that link a C based library
 
-
-TO DO - Option 2
-
-
-
-
-
-
-
-As of today, [tianocore/edk2](https://github.com/tianocore/edk2) does not support option **(2)** so to support compiling
-Rust code in an EDK II build process, the end user must update and maintian the build rules to handle the Rust toolchain.
-This coupling of the EDK II build system with the Rust/Cargo build system introduces additional complexity alongside EDK
-II workspace requirements causing friction with Rust workspace conventions. EDK II customizations such as PCDs are not
-natively supported in Rust. Conversely, Rust feature flags are not supported in the EDK II build process. This further
-increases integration complexity as consumers must understand multiple types of customization and how they may cooperate
-with each other.
-
-However, using option 2 does allow for linking Rust and C code in several combinations:
-
-- **C source** + **Rust source** mixed in .inf (Library or Module)
-  - Rust source code is recognized and supported by an EDK II build rule – Rust-To-Lib-File (.rs => .lib)
-- **Pure Rust Module only**.
-  - A Cargo.toml file is added to INF file as source.
-  - Rust Module build is supported by EDK II build rule – Toml-File.RUST_MODULE (.toml => .efi)
-- **Pure Rust Module** + **Pure Rust Library with Cargo Dependency**.
-  - The cargo dependency means the rust lib dependency declared in Cargo.toml.
-- **Pure Rust Module** + **C Library with EDK II Dependency**.
-  - Rust Module build is supported by EDK II build rule – Toml-File (.toml => .lib)
-  - The EDK II dependency means the EDK II lib dependency declared in INF.
-    - If a rust module is built with C, the cargo must use `staticlib`. Or, `rlib` should be used.
-- **C Module** + **Pure Rust Library with EDK II Dependency**.
-  - Rust Lib build is supported by EDK II build rule – Toml-File. (.toml => .lib)
-- **Pure Rust Module** + **Pure Rust Library with EDK II Dependency**.
-  - Same as combining others from above.
-
-
-. The [Patina](https://github.com/OpenDevicePartnership/patina?tab=readme-ov-file#patina)
-open-source project does.
-
-**(2)** is particularly useful for linking Rust code with C code in a given module. However, several combinations are
-possible with today's support:
-
-
-After experimenting with **(2)**, we have found that while it  is how most projects initially consider integrating Rust
-into their codebase but in practice the integration complexity is high due to the ability to cointegrate the Rust/Carg
-build system with the EDK II build system and it naturally leads to Rust source code being maintained in the C codebase
-which is not ideal due to language and tooling differences.
-
-
-
-
-When using option **(1)** to build a pure Rust code .efi binary, that best ensures consumers they are using a "Rust
-implementation". It is possible that Rust build may have had C code linked into the binary with a FFI, but that is not
-a practice in Patina.
-
-![Rust Integration Options](./docs/images/rust_integration_options.png)
-
-
-
-
-
-
-
-
-
-#### Local Development
-
-The above steps will help you build and test the vanilla code, with dependencies fetched from
-[crates.io](https://crates.io). For local development, you should modify the relevant crates within
-the `patina` repository and update the dependencies using appropriate local path.
-
-
-## Advanced Usage
-
-### Using a Custom QEMU Installation
-
-By default, this repository automates the process of choosing a known working QEMU version and downloading that version
-into the workspace for you. If you want to use a custom QEMU installation, you can do so by passing the path to the
-Stuart build command with the`QEMU_PATH` argument. For example:
-
-```cmd
-stuart_build -c Platforms/QemuQ35Pkg/PlatformBuild.py --flashonly QEMU_PATH="<path to qemu executable>"
-```
-
-You can also specify the directory where the QEMU binary is located by passing the `QEMU_DIR` argument. For example:
-
-```cmd
-stuart_build -c Platforms/QemuQ35Pkg/PlatformBuild.py --flashonly QEMU_DIR="<path to qemu bin directory>"
-```
-
-### Self Certification Tests
-
-Refer to the [Self Certification Test](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/SelfCertifcationTest.md)
-documentation for information on how to configure and run the [Self Certification Tests (SCTs)](https://github.com/tianocore/tianocore.github.io/wiki/UEFI-SCT).
+This repository took the minimal approach to implement the dual build environment by placing a common [cargo.toml](https://sfazsddf)
+file in the root that contains a ```members``` section to indicate all possible Rust modules to build, and the .inf file
+lines included in the .dsc/.fdf files indicate which module to include in the platform's build.  When stuart_build is
+executed, all of the Rust modules are compiled first, the C modules next, then the modules are linked into the final
+FirmwareDevice image.

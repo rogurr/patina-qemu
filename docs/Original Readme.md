@@ -114,72 +114,7 @@ There are two platforms currently supported in this repository - `QemuQ35Pkg` an
   | WSL           | x64, AArch64                   |
   | Linux         | x64, AArch64                   |
 
-### Option 1: Docker Container Workspace
-
-If this is your first time using this repository and you're not familiar with the build process, it is recommended
-to use a docker container which is the same environment used by the constant integration build scripts in this repository.
-The containers provide an Ubuntu command line prompt with all of the proper tools and environment setup with minimal
-changes necessary to the host system.
-
-#### Download and install Docker
-
-The [Docker](https://docs.docker.com/) website contains information about the app and how containers work with specific
-install instructions for [Linux](https://docs.docker.com/desktop/setup/install/linux/) and
-[Windows](https://docs.docker.com/desktop/setup/install/windows-install/).
-
-NOTE: If installing on Windows, it's best to use the WSL2 back-end instead of Hyper-V, so you will need to install
-[WSL](https://learn.microsoft.com/en-us/windows/wsl/install) prior to installing Docker if not already installed then
-click the checkbox to select using WSL2 Backend if prompted.
-
-To confirm docker is working, run docker with the version request which works in either environment:
-
-```shell
-docker --version
-```
-
-#### Download and run the container
-
-The following command created from the [devcontainer json file](https://github.com/OpenDevicePartnership/patina-qemu/blob/refs/heads/main/.devcontainer/devcontainer.json)
-in the CI build will download the container, install it into docker using the name 'patina-dev', and open a command
-prompt inside the Ubuntu container environment.  The same run command is used in both the Linux and the Windows environment.
-
-```shell
-  docker run -it \
-    --privileged \
-    --name "patina-dev" \
-    -v "[MY_WORKSPACE_PATH]:/workspace" \
-    -p 5005-5008:5005-5008 \
-    -v /tmp/.X11-unix:/tmp/.X11-unix \
-    -e DISPLAY="${DISPLAY:-:0}" \
-    "ghcr.io/microsoft/mu_devops/ubuntu-24-dev:latest" \
-    /bin/bash
-```
-
-Note:  The ```[MY_WORKSPACE_PATH]``` string needs to be updated to point to the directory that contains the repository you
-plan to compile.
-
-#### Build inside the container
-
-Once in the container's Ubuntu shell, the repository can be accessed by switching to the 'workspace' directory, Git needs
-to be notified the repo is safe, the current repo pip-requirements need to be updated, and the stuart commands can be
-run to compile:
-
-```shell
-  cd /workspace
-  git config --global --add safe.directory '*'
-```
-
-Since this is inside the container and will not affect the host environment, it is safe to install any pip requirements
-without using the python workspace and stuart can be run without any specific toolchain labels
-
-```shell
-  pip install --upgrade -r pip-requirements.txt
-  stuart_setup -c Platforms/QemuSbsaPkg/PlatformBuild.py
-  stuart_update -c Platforms/QemuSbsaPkg/PlatformBuild.py
-  stuart_build -c Platforms/QemuSbsaPkg/PlatformBuild.py --flashrom
-```
-
-### Option 2: Automated Guided Setup Script - workspace_setup.py
+### Option 1: Automated Guided Setup Script - workspace_setup.py
 
 If this is your first time using this repository and you're not familiar with the build process, it is recommended
 that you start with `QemuQ35Pkg` and use the workspace setup wizard to get started. You will need to install Python
@@ -203,7 +138,7 @@ dependencies. The manual steps are described below.
 
 <!-- markdownlint-disable MD033
 MD033: Allow inline HTML for styling elements not easily handled by Markdown.-->
-### Option 3: Manual Setup
+### Option 2: Manual Setup
 
 This is a more detailed, step-by-step manual setup process.
 
