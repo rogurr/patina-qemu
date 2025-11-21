@@ -15,11 +15,8 @@ processes, and it greatly simplifies the integration.
 
 ## Option 1 Usage - Adding a DXE Core Driver .efi binary into the build
 
-The following outline covers the items and steps used by the GitHub actions to produce a bootable .FD image that includes
+The following list outlines the items and steps used by the GitHub actions to produce a bootable .FD image that includes
 the Patina DXE Core driver and can be executed in QEMU
-
- primary reason for this repository is to demonstrate using 
-in a QEMU UEFI boot using the following automated build tools:
 
 1) The [Patina DXE Core](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) repository contains code to build
 a fully Rust based DXE core driver targeted toward either the SBSA or Q35 platform.
@@ -32,6 +29,12 @@ the tree.
 an entry to define the pre-compiled binary to use instead of the typical line that instructs the build to use the binary
 produced when compiling modules in the .dsc file.
 
+### Replacing the .efi Binary - Modify .fdf file
+
+If building this UEFI locally and you want to add a different .efi binary, the easiest method is to update the ```FILE DXE_CORE```
+section to point to the file you want to include and re-compile.  The .fdf files contain several lines to allow overrides
+and selecting nuget debug or release flavors which can all be replaced with the following sample entry.
+
 ```text
   FILE DXE_CORE = 23C9322F-2AF2-476A-BC4C-26BC88266C71 {
     SECTION PE32 = "<new dxe core file path>"
@@ -39,26 +42,23 @@ produced when compiling modules in the .dsc file.
   }
 ```
 
-If building this UEFI locally and you want to add a different .efi binary, there are several methods supported
+### Replacing the .efi Binary - Define on command line
 
-1) The easiest is to update the ```FILE DXE_CORE``` section to point to the file you want to include and re-compile.
-The .fdf files contain several lines to allow overrides and selecting nuget debug or release flavors which can all be
-replaced with the above sample entry.
-2) A DXE_CORE_BINARY_OVERRIDE define is available that can be set at the command line to point to a new .efi binary
-without having to modify the .fdf file.
+Another option to replace the binary is to use the DXE_CORE_BINARY_OVERRIDE define that can be set at the command line
+to point to a new .efi binary without having to modify the .fdf file.
 
 ```cmd
   stuart_build -c Platforms\QemuQ35Pkg\PlatformBuild.py --FLASHROM BLD_*_DXE_CORE_BINARY_OVERRIDE="<new dxe core file path>"
 ```
 
-3) Patching a Pre-Built UEFI Firmware Device Image
+### Replacing the .efi Binary - Patina FW Patcher
 
-If multiple iterations of the DXE core are to be tested, the .fdf file is setup so the DXE Core is in it's own FV which can
-be patched in the final FD image by using the [Patina FW Patcher](https://github.com/OpenDevicePartnership/patina-fw-patcher).
-This tool will open an existing UEFI FD binary, find and replace the current DXE Core driver with a new file, and launch
-QEMU with the patched ROM image.
+And the 3 option to use a new binary is patching the .FD file created from the build process which can be useful if multiple
+iterations need to be tested.  The platform .fdf files place the DXE Core in it's own firmware volume which can be replaced
+after compilation by using the [Patina FW Patcher](https://github.com/OpenDevicePartnership/patina-fw-patcher) to open an
+existing UEFI FD binary, find and replace the current DXE Core driver, and launch QEMU with the patched ROM image.
 
-A [build_and_run_rust_binary.py](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/build_and_run_rust_binary.py)
+The [build_and_run_rust_binary.py](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/build_and_run_rust_binary.py)
 script is provided in the root of this repository to perform all steps necessary to compile the Patina DXE core driver,
 call the patcher, and start QEMU.  For more details, run it with the `--help` command line parameter:
 
@@ -66,16 +66,20 @@ call the patcher, and start QEMU.  For more details, run it with the `--help` co
   python build_and_run_rust_binary.py --help
 ```
 
-Note 1: This tool is not a general FW patcher to be used on any UEFI FD image.  It relies on specific features
-implemented in this UEFI build.
-Note 2: Because this tool is patching an existing QEMU ROM image, only changes to the Rust DXE Core code will be
-merged.  Any changes to the C code will require running a full stuart_build process to build a new ROM image.
-Note 3: The tool can be enhanced to patch more than the Patina DXE Core.  If there is interest in new features,
-please start a discussion in the tool's repo [discussions](https://github.com/OpenDevicePartnership/patina-fw-patcher/discussions/categories/q-a)
+Note that this tool is not a general FW patcher to be used on any UEFI FD image due to relying on specific features
+implemented in this UEFI build.  Because this tool is patching an existing QEMU ROM image, only changes to the Rust
+DXE Core code will be merged and any changes to the C code will require running a full stuart_build process.
+
+The tool can be enhanced to patch more than the Patina DXE Core.  If there is interest in new features, please start
+a discussion in the tool's repo [discussions](https://github.com/OpenDevicePartnership/patina-fw-patcher/discussions/categories/q-a)
 area.
 
 
 
+
+
+
+TO DO - Option 2
 
 
 
