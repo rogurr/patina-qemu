@@ -9,8 +9,8 @@ the firmware device (FD) build process.
 2. Add support to the EDK2 build infrastructure to compile Rust source code alongside the C source code when processing
 each module specified in a DSC file.
 
-Option **(2)** is a viable solution and this repository has several examples, but the primary method to ingest the Patina
-DXE core is by using option **(1)** since it allows for a more natural development experience using the Rust tools and
+The second option is a viable solution and this repository has several examples, but the first option is the primary method
+used to ingest the Patina DXE core since it allows for a more natural development experience using the Rust tools and
 processes, and it greatly simplifies the integration.
 
 ## Integration Option 1
