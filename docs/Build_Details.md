@@ -1,18 +1,25 @@
 # Build Details
 
 Due to the constant changing of build tools and often subtle differences that can be encountered on build machines,
-the recommended method to compile is to download a container manager and execute the build scripts in the same
-[container](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/.devcontainer/devcontainer.json) used by the
-repository's constant integration GitHub action.
-
-If it is more desireable to support building in a native environment, the following steps can be used and follow the same
-steps performed in the dev container.  Due to the differences mentioned above, they are not guaranteed to work and may
-require effort in debugging the build process.
+the recommended method to compile is to use a container as described in the primary
+[Readme.md](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/Readme.md) file. If however it is more
+desireable to support building in a native environment, the following steps are not guaranteed to work in all scenarios,
+but do outline the configuration provided by the dev container.
 
 <!-- markdownlint-disable MD033
 MD033: Allow inline HTML for styling elements not easily handled by Markdown.-->
 
 ## Prerequisites
+
+The following tables list all tools necessary to compile in the respective environment.  The process has been put into a
+script to prepare for building `QemuQ35Pkg` on a developer's host system, but it relies on [Python 3](https://www.python.org/downloads/)
+being installed and is dependent on the environment.  It should be treated as a possible shortcut instead of a tool expected
+to work in all scenarios.
+
+```text
+  python workspace_setup.py   <== Run in Linux 🐧
+  py -3 workspace_setup.py    <== Run in Windows 🪟
+```
 
 ### 🪟 Windows 11 - 24H2
 
@@ -49,15 +56,6 @@ MD033: Allow inline HTML for styling elements not easily handled by Markdown.-->
 
 <!-- markdownlint-enable MD033 -->
 
-All of these steps have been put into a script to allow building `QemuQ35Pkg` on a developer's host system.  This script
-relies on [Python 3](https://www.python.org/downloads/) being installed first and is very dependent on the environment it
-is executed under.  So it is being documented here as an FYI and possible shortcut.
-
-```text
-  python workspace_setup.py   <== Run in Linux 🐧
-  py -3 workspace_setup.py    <== Run in Windows 🪟
-```
-
 ## Clone, Build, and Run
 
 Clone the [patina-qemu](https://github.com/OpenDevicePartnership/patina-qemu/) repository and change to its directory to
@@ -90,19 +88,18 @@ command will automatically initiate the QEMU launch.
 
 - To compile the Patina DXE Core and integrate into this build, see the
 [Rust Integration](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) documentation
-- To launch an OS in QEMU instead of the UEFI shell, add the path to the OS in the stuart_build command line
-
-```text
-  stuart_build -c Platforms/QemuQ35Pkg/PlatformBuild.py --flashrom PATH_TO_OS="C:\OS\Windows11.qcow2
-```
-
-- To setup a debugger in UEFI, see the "WinDbg + QEMU + Patina UEFI" [Debugging Guide](Platforms/Docs/Common/windbg-qemu-uefi-debugging.md)
-- To setup a debugger in Windows, see the "WinDbg + QEMU + Patina UEFI + Windows OS" [Debugging Guide](Platforms/Docs/Common/windbg-qemu-windows-debugging.md)
+- To setup a debugger in UEFI, see the [WinDbg + QEMU + Patina UEFI Debugging Guide](Platforms/Docs/Common/windbg-qemu-uefi-debugging.md)
+- To setup a debugger in Windows, see the [WinDbg + QEMU + Patina UEFI + Windows OS Debugging Guide](Platforms/Docs/Common/windbg-qemu-windows-debugging.md)
+- Refer to the [Self Certification Test](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/SelfCertifcationTest.md)
+documentation for information on how to configure and run the Tianocore Self Certification Tests (SCTs)
 - To use a custom QEMU installation, add the `QEMU_PATH` argument to the stuart_build command
 
 ```text
   stuart_build -c Platforms/QemuQ35Pkg/PlatformBuild.py --flashonly QEMU_PATH="<path to qemu executable>
 ```
 
-- Refer to the [Self Certification Test](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/SelfCertifcationTest.md)
-documentation for information on how to configure and run the Tianocore Self Certification Tests (SCTs)
+- To launch an OS in QEMU instead of the UEFI shell, add the path to the OS in the stuart_build command line
+
+```text
+  stuart_build -c Platforms/QemuQ35Pkg/PlatformBuild.py --flashrom PATH_TO_OS="C:\OS\Windows11.qcow2
+```
