@@ -1,9 +1,9 @@
 # Demonstration of Patina in a QEMU UEFI Platform Build
 
-The purpose of this repository is to demonstrate integrating code from the Open Device Partnership's "Patina Boot Firmware"
-project into a UEFI platform build and is meant to be a "first stop" for developers exploring ODP and the Patina Boot Firmware.
-It contains a permanent fork of [OvmfPkg](https://github.com/tianocore/edk2/tree/HEAD/OvmfPkg) from EDK II with changes
-based on the following:
+The primary purpose of this repository is to demonstrate integrating code from the Open Device Partnership's "Patina Boot
+Firmware" project into a UEFI platform build and is meant to be a "first stop" for developers exploring ODP and the Patina
+Boot Firmware. It contains a permanent fork of [OvmfPkg](https://github.com/tianocore/edk2/tree/HEAD/OvmfPkg) from EDK II
+with changes based on the following:
 
 - Documentation
   - [Open Device Partnership](https://opendevicepartnership.org/) - Primary ODP documentation web page

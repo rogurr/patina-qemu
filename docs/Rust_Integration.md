@@ -46,9 +46,9 @@ easiest method to inject a user built binary is to update the `FILE DXE_CORE` se
   }
 ```
 
-The `#if` statements in that section are primarily for selecting either the debug or release flavor of the binary from the
-nuget feed, but also support using a command line parameter to define a newly created .efi binary.  By setting the
-`DXE_CORE_BINARY_OVERRIDE` define to the new binary's file path when running Stuart, it will be included without having
+The reason that section contains the `#if` statements is to support selecting either the debug or release flavor of the
+binary from the nuget feed and to support using a command line parameter to define a newly created .efi binary.  By setting
+the `DXE_CORE_BINARY_OVERRIDE` define to the new binary's file path when running Stuart, it will be included without having
 to modify the .fdf file.
 
 ```cmd

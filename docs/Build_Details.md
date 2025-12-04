@@ -86,7 +86,7 @@ command will automatically initiate the QEMU launch.
 
 ## Advanced Options
 
-- To compile the Patina DXE Core and integrate into this build, see the
+- To compile the Patina DXE Core and integrate into this build instead of using the pre-compiled binary, see the
 [Rust Integration](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) documentation
 - To setup a debugger in UEFI, see the [WinDbg + QEMU + Patina UEFI Debugging Guide](Platforms/Docs/Common/windbg-qemu-uefi-debugging.md)
 - To setup a debugger in Windows, see the [WinDbg + QEMU + Patina UEFI + Windows OS Debugging Guide](Platforms/Docs/Common/windbg-qemu-windows-debugging.md)
