@@ -1,13 +1,10 @@
 # Build Details
 
 Due to the constant changing of build tools and often subtle differences that can be encountered on build machines,
-the recommended method to compile is to use a container as described in the primary
+the recommended method to compile is to use a Linux container as described in the primary
 [Readme.md](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/Readme.md) file. If however it is more
-desireable to support building in a native environment, the following steps are not guaranteed to work in all scenarios,
-but do outline the configuration provided by the dev container.
-
-<!-- markdownlint-disable MD033
-MD033: Allow inline HTML for styling elements not easily handled by Markdown.-->
+desireable to support building in Linux or Windows outside the container, the following steps are not guaranteed to
+work in all scenarios, but do provide a setup baseline to work from.
 
 ## Prerequisites
 
@@ -21,7 +18,10 @@ to work in all scenarios.
   py -3 workspace_setup.py    <== Run in Windows 🪟
 ```
 
-### 🪟 Windows 11 - 24H2
+<!-- markdownlint-disable MD033
+MD033: Allow inline HTML for styling elements not easily handled by Markdown.-->
+
+### 🪟 Windows 11
 
 | Tool | Install Command |
 | --- | --- |
@@ -41,7 +41,7 @@ to work in all scenarios.
 
 **Note:** Add the LLVM (`C:\LLVM\bin`) and QEMU (`C:\Program Files\qemu\bin`) directories to the `PATH` environment variable.
 
-### 🐧 Linux/WSL - Ubuntu 24.04 LTS - Bash
+### 🐧 Linux/WSL
 
 | Tool | Install Command |
 | --- | --- |

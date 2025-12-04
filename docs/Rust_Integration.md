@@ -23,10 +23,10 @@ lead to Rust source code being maintained in the C codebase which is not ideal d
 
 The [Patina DXE Core QEMU](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) repository provides a sample
 .efi driver that is ingested by this repository using integration option 1.  It contains code to build a fully Rust based
-DXE core .efi driver, targeted toward either the SBSA or Q35 platform, and its Constant Integration GitHub action publishes
+DXE core .efi driver, targeted toward either the SBSA or Q35 platform, and its Continuous Integration GitHub action publishes
 the debug and release .efi drivers to a Nuget feed that this repository can then use during its build.
 
-This repository, the [Patina QEMU UEFI](https://github.com/) repository, has its own Constant Integration GitHub action
+This repository, the [Patina QEMU UEFI](https://github.com/) repository, has its own Continuous Integration GitHub action
 to pull the nuget feed and extract the binary to be used in its build process.  The platform .fdf file points to where the
 binary was extracted and the firmware device linking process places the Patina DXE Core .efi binary into a firmware volume
 inside the final FD file.
@@ -67,10 +67,10 @@ and start QEMU.  For more details, run it with the `--help` command line paramet
 
 ## Integration Option 2
 
-Option 2 is more complicated but does provide several benefits.  Even though it is not the recommended method, this
-repository does have several examples of drivers that are written in Rust and compiled by the stuart_build process.
-This doesn't provide the security benefits of a pure Rust based build, but it does allow for interim steps in trying
-to achieve that goal:
+Option 2 is more complicated but does provide several benefits.  Even though it is not the recommended method, this repository
+does have several examples of drivers that are written in Rust and compiled by the stuart_build process. This doesn't provide
+the same memory safety benefits of a pure Rust based build, but it does allow for interim steps in trying to achieve that
+goal:
 
 - Modules written in Rust that link a Rust based library (aka crate)
 - Modules written in Rust that link a C based library
