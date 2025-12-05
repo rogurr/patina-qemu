@@ -42,7 +42,7 @@ an ARM System Architecture
 
 Both packages can be built in either a Windows or Linux environment as outlined in the
 [Build Details](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/Build_Details.md) document.  But for
-simplicity, it is recommended to use the pre-configured [Container](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/.devcontainer/devcontainer.json)
+simplicity, it is recommended to start by using the environment in the [Dev Container](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/.devcontainer/devcontainer.json)
 used by this repository's CI build since it provides an Ubuntu command line prompt with all of the proper tools and environment
 settings necessary with minimal changes to the development platform.
 
