@@ -9,7 +9,7 @@ with changes based on the following:
   - [Open Device Partnership](https://opendevicepartnership.org/) - Primary ODP documentation
   - [Patina](https://opendevicepartnership.github.io/patina/) - Primary Patina documentation
 - GitHub Links
-  - [ODP](https://github.com/OpenDevicePartnership) - Open Device Partnership GitHub page
+  - [ODP](https://github.com/OpenDevicePartnership) - Open Device Partnership GitHub organization
   - [Patina](https://github.com/OpenDevicePartnership/patina) - Patina Project GitHub page
   - [Patina DXE Core QEMU](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) - Repository showcasing the sample
 Patina DXE core .efi binary used by this repository
