@@ -47,7 +47,7 @@ settings necessary with minimal changes to the development platform.
 ### Install WSL for Windows
 
 If compiling in Linux, this step can be skipped.  If compiling on Windows, the container is most stable running in WSL
-(Widnows subsystem for Linux) which needs to be [installed](https://learn.microsoft.com/en-us/windows/wsl/install) before
+(Widnows subsystem for Linux) which needs to be [installed](https://learn.microsoft.com/windows/wsl/install) before
 proceeding. The default distributon, Ubuntu, is what is used for this demo and the following steps assume the user has
 opened a command box and is at the WSL command prompt.
 
