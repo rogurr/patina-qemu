@@ -123,7 +123,7 @@ safe to install any global pip requirements and execute the Stuart commands with
 ```
 
 The final stuart_build command will compile the ARM support code, launch QEMU, and boot into the UEFI shell to demonstrate
-the loading of the pre-built Patina DXE Core driver.  Switching the path `QemuSbsaPkg` to `QemuQ35Pkg` will compile the Q35
+the loading of the pre-built Patina DXE Core.  Switching the path from `QemuSbsaPkg` to `QemuQ35Pkg` will compile the Q35
 X86 architecture platform package.
 
 For more options or details about building in your native environment or integrating changes, please refer to
