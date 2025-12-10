@@ -14,10 +14,8 @@ with changes based on the following:
   - [Patina DXE Core QEMU](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) - Repository showcasing the sample
 Patina DXE core .efi binary used by this repository
 
-## High-Level Overview
-
 As Rust adpotion increases, it is important for each user to determine best way to incorporate changes during the transition
-away from code written in C toward code written in Rust.  UEFI inherently supports dynamic integration, so at a high level 
+away from code written in C toward code written in Rust.  UEFI inherently supports dynamic integration, so at a high level
 there are two basic approaches:
 
 1. Build the code using Rust tools in a stand-alone workspace to produce a .efi binary that is later integrated into the
@@ -43,34 +41,42 @@ an ARM System Architecture
 Both packages can be built in either a Windows or Linux environment as outlined in the
 [Build Details](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/Build_Details.md) document.  But for
 simplicity, it is recommended to start by using the environment in the [Dev Container](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/.devcontainer/devcontainer.json)
-used by this repository's CI build since it provides an Ubuntu command line prompt with all of the proper tools and environment
+used by this repository's CI build.  It provides an Ubuntu command line prompt with all of the proper tools and environment
 settings necessary with minimal changes to the development platform.
 
-### Install Docker
+### Install WSL for Windows
 
-The development platform does need to have a Container Manager installed to handle loading and execution of the container.
-There are several managers available, and for this example [Docker](https://docs.docker.com/) will be used which has install
-instructions for [Linux](https://docs.docker.com/desktop/setup/install/linux/) and [Windows](https://docs.docker.com/desktop/setup/install/windows-install/).
+If compiling in Linux, this step can be skipped.  If compiling on Windows, the container is most stable running in WSL
+(Widnows subsystem for Linux) which needs to be [installed](https://learn.microsoft.com/en-us/windows/wsl/install) before
+proceeding. The default distributon, Ubuntu, is what is used for this demo and the following steps assume the user has
+opened a command box and is at the WSL command prompt.
 
-If installing on Windows, it is best to use the WSL2 (Windows Subsystem for Linux v2) back-end instead of Hyper-V, so installation
-of [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) should be done prior to installing Docker.  Then if prompted
-during the Docker install, click the checkbox to select using the WSL2 Backend.
+**Hint:** Files can be shared between the Windows file system and WSL by using `\\wsl.localhost\Ubuntu\home\<user name>`
+in file explorer to see into WSL, and the paths `/mnt/c`, `/mnt/d`, etc can be used in WSL to see the Windows drives.
+But the translation layer can cause significant delays and line ending errors during compilation if code is cloned in the
+Windows file system and attempted to be built in WSL or the container environment.
 
-To confirm docker is working after installation, execute a version request from the command line.
+### Install a Container Manager
 
-```shell
-docker --version
+A container manager needs to be installed to load the dev container's environment.  This example is using [PodMan](https://podman.io/)
+which is open source, but other applications such as Docker can be used.  At the Linux command prompt, type the following
+to download and test podman by running the version command.
+
+``` bash
+  sudo apt-get update
+  sudo apt-get install -y podman
+  podman --version
 ```
 
-### Load and Run the Container
+Download and launch the container's Ubuntu's environment by executing the Podman `run` command.  If using a different manager
+than podman, the parameters were created using the data in the [devcontainer.json](https://github.com/OpenDevicePartnership/patina-qemu/blob/refs/heads/main/.devcontainer/devcontainer.json)
+file.
 
-Once Docker is installed, the following command will download the container, launch the container's Ubuntu environment,
-and open a command prompt for use.  If using a Windows device, the command should be run from within a WSL2 command box.
-
-```shell
-  docker run -it \
+``` bash
+  podman run -it \
     --privileged \
-    -v "[MY_WORKSPACE_PATH]:/workspace" \
+    --name "patina-dev" \
+    -v "$PWD:/workspace" \
     -p 5005-5008:5005-5008 \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
     -e DISPLAY="${DISPLAY:-:0}" \
@@ -78,30 +84,36 @@ and open a command prompt for use.  If using a Windows device, the command shoul
     /bin/bash
 ```
 
-Note that the above command must have `[MY_WORKSPACE_PATH]` updated to the full path of the directory where this repository
-was cloned. For example `-v "/home/<my_user_name>/patina-qemu:/workspace"`.
+At this point, the command prompt is an Ubuntu operating environment with all repository and build tools necessary to compile.
 
-If your host system is running Windows, the Windows `C:\, D:\, etc.` drives can be accessed from within WSL2 by using
-`/mnt/c/, /mnt/d/, etc.`, but the translation layer between the two file systems adds latency that will make the build
-significantly slower.  It is recommended to clone the repository in the same WSL2 environment that launches the container.
+**Hint:** Any files created inside the container will not be accessible outside the container except for files created in
+the `workspace` directory.  That path was created by the `-v` command line parameter and is a virtual mapping to the working
+directory podman was executed from.  For instance, if Podman was launched from `~/`, the directory `/workspace` will give
+access to the user root.  It is recommended to do all work in that workspace directory while in the container.
 
-And if using a different container manager than Docker, the command line parameters were created using the data in the
-[devcontainer.json](https://github.com/OpenDevicePartnership/patina-qemu/blob/refs/heads/main/.devcontainer/devcontainer.json)
-file.
+``` bash
+  cd workspace
+```
 
-### Build the code
+### Clone and build
 
-Once at the container's Ubuntu command prompt, the repository can be accessed by switching to the `/workspace` directory
-and Git needs to be notified the repo is safe:
+Git was a clean install in the container config, so the first time entering the container, the user information needs to
+be set.
 
-```shell
-  cd /workspace
+``` bash
+  git config --global user.email <your email address>
+  git config --global user.name "<your user name>"
+```
+
+The repository can now be cloned normally and Git needs to be told it is a safe repo.
+
+``` bash
+  git clone https://github.com/OpenDevicePartnership/patina-qemu.git
   git config --global --add safe.directory '*'
 ```
 
-Since this is inside the container and will not affect the host environment, it is safe to install any global pip requirements
-without using the python workspace.  And since the environment was specifically setup to compile this codebase, Stuart
-can be run without any specific toolchain tags:
+Since this is inside the container with proper tools/environment available and away from the host environment, it is
+safe to install any global pip requirements and execute the Stuart commands without any specific toolchain tags.
 
 ```shell
   pip install --upgrade -r pip-requirements.txt
@@ -110,7 +122,10 @@ can be run without any specific toolchain tags:
   stuart_build -c Platforms/QemuSbsaPkg/PlatformBuild.py --flashrom
 ```
 
-The --flashrom option for stuart_build will launch the firmware and boot into the UEFI shell demonstrating the loading of
-the pre-built Patina DXE Core driver.  For more options or details about the environment, please refer to
+The final stuart_build command will compile the ARM support code, launch QEMU, and boot into the UEFI shell to demonstrate
+the loading of the pre-built Patina DXE Core driver.  Switching the path `QemuSbsaPkg` to `QemuQ35Pkg` will compile the Q35
+X86 architecture platform package.
+
+For more options or details about building in your native environment or integrating changes, please refer to
 [Rust Integration](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/Rust_Integration.md)
 or [Build Details](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/Build_Details.md).
