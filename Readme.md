@@ -6,12 +6,12 @@ contains a permanent fork of [OvmfPkg](https://github.com/tianocore/edk2/tree/HE
 on the following:
 
 - Documentation
-  - [Open Device Partnership](https://opendevicepartnership.org/) - Primary ODP documentation
-  - [Patina](https://opendevicepartnership.github.io/patina/) - Primary Patina documentation
+  - [Open Device Partnership (ODP) documentation](https://opendevicepartnership.org/)
+  - [Patina project documentation](https://opendevicepartnership.github.io/patina/)
 - GitHub Links
-  - [ODP](https://github.com/OpenDevicePartnership) - Open Device Partnership GitHub organization
-  - [Patina](https://github.com/OpenDevicePartnership/patina) - Patina GitHub repository
-  - [Patina DXE Core QEMU](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) - Repository showcasing the sample
+  - [ODP GitHub organization](https://github.com/OpenDevicePartnership)
+  - [Patina GitHub repository](https://github.com/OpenDevicePartnership/patina)
+  - [Patina DXE Core QEMU repository](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) showcasing the sample
 Patina DXE core .efi binary used by this repository
 
 As Rust adpotion increases, it is important for each user to determine best way to incorporate changes during the transition
@@ -138,3 +138,4 @@ X86 architecture platform package.
 For more options or details about building in your native environment or integrating changes, please refer to
 [Rust Integration](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/Rust_Integration.md)
 or [Build Details](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/Build_Details.md).
+
