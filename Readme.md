@@ -1,9 +1,9 @@
 # Demonstration of Patina in a QEMU UEFI Platform Build
 
-The primary purpose of this repository is to demonstrate integrating code from the Open Device Partnership's "Patina Boot
-Firmware" project into a UEFI platform build and is meant to be a "first stop" for developers exploring ODP and the Patina
-Boot Firmware. It contains a permanent fork of [OvmfPkg](https://github.com/tianocore/edk2/tree/HEAD/OvmfPkg) from EDK II
-with changes based on the following:
+The primary purpose of this repository is to demonstrate integrating code from the Open Device Partnership's Patina project
+into a UEFI platform build and is meant to be a "first stop" for developers exploring ODP and the Patina Boot Firmware. It
+contains a permanent fork of [OvmfPkg](https://github.com/tianocore/edk2/tree/HEAD/OvmfPkg) from EDK II with changes based
+on the following:
 
 - Documentation
   - [Open Device Partnership](https://opendevicepartnership.org/) - Primary ODP documentation
@@ -20,12 +20,12 @@ there are two basic approaches:
 
 1. Build the code using Rust tools in a stand-alone workspace to produce a .efi binary that is later integrated into the
 Firmware Device (FD) image
-2. Add support to the EDK2 build infrastructure to compile the Rust source code alongside the C source code when processing
+2. Add support to the EDK II build infrastructure to compile the Rust source code alongside the C source code when processing
 each module specified in a DSC file
 
 This 2nd approach is a viable solution, but the Patina project and the following documentation are focused primarily on the
 first approach since it allows for a more natural Rust development experience using only Rust tools and processes, and also
-greatly simplifies the integration by not requiring modifications to EDK2 build scripts.  However, both options are discussed
+greatly simplifies the integration by not requiring modifications to EDK II build scripts.  However, both options are discussed
 in the [Rust Integration](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/docs/Rust_Integration.md) documentation
 to help each end-user determine what best fits their usage model.
 
@@ -58,9 +58,11 @@ Windows file system and attempted to be built in WSL or the container environmen
 
 ### Install a Container Manager
 
-A container manager needs to be installed to load the dev container's environment.  This example is using [PodMan](https://podman.io/)
-which is open source, but other applications such as Docker can be used.  At the Linux command prompt, type the following
-to download and test podman by running the version command.
+A manager needs to be installed to load the dev container's environment.  This example is using [podman](https://podman.io/)
+which is open source, but other applications such as Docker can be used for more advanced options such as
+[Developing inside a Container](https://code.visualstudio.com/docs/devcontainers/containers).
+
+At the Linux command prompt, type the following to download podman and test the installation.
 
 ``` bash
   sudo apt-get update
@@ -68,8 +70,8 @@ to download and test podman by running the version command.
   podman --version
 ```
 
-Download and launch the container's Ubuntu's environment by executing the Podman `run` command.  If using a different manager
-than podman, the parameters were created using the data in the [devcontainer.json](https://github.com/OpenDevicePartnership/patina-qemu/blob/refs/heads/main/.devcontainer/devcontainer.json)
+The podman `run` command is then used to download the container and load its Ubuntu environment.  If using a different manager,
+the parameters were created using the data in the [devcontainer.json](https://github.com/OpenDevicePartnership/patina-qemu/blob/refs/heads/main/.devcontainer/devcontainer.json)
 file.
 
 ``` bash
@@ -86,13 +88,20 @@ file.
 
 At this point, the command prompt is an Ubuntu operating environment with all repository and build tools necessary to compile.
 
-**Hint:** Any files created inside the container will not be accessible outside the container except for files created in
+**Hint1:** Any files created inside the container will not be accessible outside the container except for files created in
 the `workspace` directory.  That path was created by the `-v` command line parameter and is a virtual mapping to the working
-directory podman was executed from.  For instance, if Podman was launched from `~/`, the directory `/workspace` will give
+directory podman was executed from.  For instance, if it was launched from `~/`, the directory `/workspace` will give
 access to the user root.  It is recommended to do all work in that workspace directory while in the container.
 
 ``` bash
   cd workspace
+```
+
+**Hint2:** The name `patina-dev` was used to tell podman to log the parameters so next time the container needs to be run,
+the command can be shortened.
+
+``` bash
+  podman start -ai "patina-dev"
 ```
 
 ### Clone and build

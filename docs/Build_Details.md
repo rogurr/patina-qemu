@@ -69,14 +69,14 @@ be the workspace
 Setup the Python virtual environment and pull the pip requirements
 
 ```text
-  python -m venv q35env
-  q35env\Scripts\activate.bat  <== Run in Windows 🪟
-  source q35env/bin/activate   <== Run in Linux 🐧
+  python -m venv q35venv
+  q35venv\Scripts\activate.bat  <== Run in Windows 🪟
+  source q35venv/bin/activate   <== Run in Linux 🐧
   pip install --upgrade -r pip-requirements.txt
 ```
 
-Run the Stuart commands to update the submodules, pull nuget feeds, and compile.  The `--flashrom` switch on the stuart_build
-command will automatically initiate the QEMU launch.
+Run the Stuart commands to update the submodules, pull external dependencies, and compile.  The `--flashrom` switch on the
+stuart_build command will automatically initiate the QEMU launch.
 
 ```text
   stuart_setup -c Platforms/QemuQ35Pkg/PlatformBuild.py
