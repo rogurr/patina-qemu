@@ -19,7 +19,7 @@ away from code written in C toward code written in Rust.  UEFI inherently suppor
 there are two basic approaches:
 
 1. Build the code using Rust tools in a stand-alone workspace to produce a .efi binary that is later integrated into the
-FirmwareDevice (FD) image
+Firmware Device (FD) image
 2. Add support to the EDK2 build infrastructure to compile the Rust source code alongside the C source code when processing
 each module specified in a DSC file
 
