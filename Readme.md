@@ -7,7 +7,7 @@ with changes based on the following:
 
 - Documentation
   - [Open Device Partnership](https://opendevicepartnership.org/) - Primary ODP documentation
-  - [Patina Boot Firmware](https://opendevicepartnership.github.io/patina/) - Primary documentation web page
+  - [Patina](https://opendevicepartnership.github.io/patina/) - Primary Patina documentation
 - GitHub Links
   - [ODP](https://github.com/OpenDevicePartnership) - Open Device Partnership GitHub page
   - [Patina](https://github.com/OpenDevicePartnership/patina) - Patina Project GitHub page
