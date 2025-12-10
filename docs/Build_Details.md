@@ -75,7 +75,7 @@ Setup the Python virtual environment and pull the pip requirements
   pip install --upgrade -r pip-requirements.txt
 ```
 
-Run the Stuart commands to update the submodules, pull nuget feeds, and compile.  The `--flashrom` switch on the stuart_build
+Run the Stuart commands to update the submodules, pull external dependencies, and compile.  The `--flashrom` switch on the stuart_build
 command will automatically initiate the QEMU launch.
 
 ```text
