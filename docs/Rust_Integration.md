@@ -29,7 +29,7 @@ to pull the nuget feed and extract the binary to be used in its build process.  
 binary was extracted and the firmware device linking process places the Patina DXE Core .efi binary into a firmware volume
 inside the final FD file.
 
-To replce the DXE Core .efi file with a new user built binary, both the platform
+To replace the DXE Core .efi file with a new user built binary, both the platform
 [QemuQ35Pkg.fdf](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/Platforms/QemuQ35Pkg/QemuQ35Pkg.fdf)
 and [QemuSbsaPkg.fdf](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/Platforms/QemuSbsaPkg/QemuSbsaPkg.fdf)
 files in this repository have a `[FV.RUST_DXE_CORE]` firmware volume definition section that contains a single driver,
@@ -50,7 +50,7 @@ the `DXE_CORE_BINARY_OVERRIDE` define to the new binary's file path when running
 to modify the .fdf file.
 
 ```cmd
-  stuart_build -c Platforms\QemuQ35Pkg\PlatformBuild.py --FLASHROM BLD_*_DXE_CORE_BINARY_OVERRIDE="<new dxe core file path>"
+  stuart_build -c Platforms\QemuQ35Pkg\PlatformBuild.py --flashrom BLD_*_DXE_CORE_BINARY_OVERRIDE="<new dxe core file path>"
 ```
 
 Or if multiple iterations of replacement and testing are needed, the Patina DXE Core binary was placed in its own firmware
@@ -72,7 +72,7 @@ goal:
 
 - Modules written in Rust that link a Rust based library (aka crate)
 - Modules written in Rust that link a C based library
-- Modules written in C that link a Rust based library (aks crate producing a cdecl api)
+- Modules written in C that link a Rust based library (aka crate producing a cdecl api)
 - Modules written in C that link a C based library
 
 For an example of a dual compilation process, this repository took the minimal approach by using a common workspace

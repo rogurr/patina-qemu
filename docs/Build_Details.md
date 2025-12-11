@@ -3,7 +3,7 @@
 Due to the constant changing of build tools and often subtle differences that can be encountered on build machines,
 the recommended method to compile is to use a Linux container as described in the primary
 [Readme.md](https://github.com/OpenDevicePartnership/patina-qemu/blob/main/Readme.md) file. If however it is more
-desireable to support building in Linux or Windows outside the container, the following steps are not guaranteed to
+desirable to support building in Linux or Windows outside the container, the following steps are not guaranteed to
 work in all scenarios, but do provide a setup baseline to work from.
 
 ## Prerequisites

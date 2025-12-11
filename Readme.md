@@ -14,7 +14,7 @@ on the following:
   - [Patina DXE Core QEMU repository](https://github.com/OpenDevicePartnership/patina-dxe-core-qemu) showcasing the sample
 Patina DXE core .efi binary used by this repository
 
-As Rust adpotion increases, it is important for each user to determine best way to incorporate changes during the transition
+As Rust adoption increases, it is important for each user to determine best way to incorporate changes during the transition
 away from code written in C toward code written in Rust.  UEFI inherently supports dynamic integration, so at a high level
 there are two basic approaches:
 
@@ -47,8 +47,8 @@ settings necessary with minimal changes to the development platform.
 ### Install WSL for Windows
 
 If compiling in Linux, this step can be skipped.  If compiling on Windows, the container is most stable running in WSL
-(Widnows subsystem for Linux) which needs to be [installed](https://learn.microsoft.com/windows/wsl/install) before
-proceeding. The default distributon, Ubuntu, is what is used for this demo and the following steps assume the user has
+(Windows subsystem for Linux) which needs to be [installed](https://learn.microsoft.com/windows/wsl/install) before
+proceeding. The default distribution, Ubuntu, is what is used for this demo and the following steps assume the user has
 opened a command box and is at the WSL command prompt.
 
 **Hint:** Files can be shared between the Windows file system and WSL by using `\\wsl.localhost\Ubuntu\home\<user name>`
