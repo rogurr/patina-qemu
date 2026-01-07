@@ -94,6 +94,7 @@ def _parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--build-target",
         "-b",
+        type=str.upper,
         choices=["DEBUG", "RELEASE"],
         default="DEBUG",
         help="Build target, either DEBUG or RELEASE.",
@@ -101,6 +102,7 @@ def _parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--platform",
         "-p",
+        type=str.upper,
         choices=["Q35", "SBSA"],
         default="Q35",
         help="QEMU platform such as Q35 or SBSA.",
@@ -108,7 +110,7 @@ def _parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--toolchain",
         "-t",
-        type=str,
+        type=str.upper,
         default="VS2022",
         help="Toolchain to use for building. "
         "Q35 default: VS2022. SBSA default: GCC5.",
