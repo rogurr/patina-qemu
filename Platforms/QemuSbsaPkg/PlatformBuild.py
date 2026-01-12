@@ -310,7 +310,6 @@ class PlatformBuilder(UefiBuilder, BuildSettingsManager):
         self.env.SetValue("PRODUCT_NAME", "QemuSbsa", "Platform Hardcoded")
         self.env.SetValue("ACTIVE_PLATFORM", "QemuSbsaPkg/QemuSbsaPkg.dsc", "Platform Hardcoded")
         self.env.SetValue("TARGET_ARCH", "AARCH64", "Platform Hardcoded")
-        self.env.SetValue("TOOL_CHAIN_TAG", "GCC5", "set default to gcc5")
         self.env.SetValue("EMPTY_DRIVE", "FALSE", "Default to false")
         self.env.SetValue("RUN_TESTS", "FALSE", "Default to false")
         self.env.SetValue("QEMU_HEADLESS", "FALSE", "Default to false")
@@ -331,6 +330,13 @@ class PlatformBuilder(UefiBuilder, BuildSettingsManager):
         self.env.SetValue("MU_SCHEMA_DIR", self.edk2path.GetAbsolutePathOnThisSystemFromEdk2RelativePath("QemuSbsaPkg", "CfgData"), "Platform Defined")
         self.env.SetValue("MU_SCHEMA_FILE_NAME", "QemuSbsaPkgCfgData.xml", "Platform Hardcoded")
         self.env.SetValue("HAF_TFA_BUILD", "FALSE", "Platform Hardcoded")
+
+        tool_chain_override_on_cmdline = any(arg.startswith("TOOL_CHAIN_TAG=") for arg in sys.argv)
+        if not tool_chain_override_on_cmdline:
+            if os.name == 'nt':
+                self.env.SetValue("TOOL_CHAIN_TAG", "VS2022", f"Default VS2022 toolchain based on host OS ({os.name})")
+            else:
+                self.env.SetValue("TOOL_CHAIN_TAG", "GCC5", f"Default GCC5 toolchain based on host OS ({os.name})")
 
         if self.Helper.generate_secureboot_pcds(self) != 0:
             logging.error("Failed to generate include PCDs")
