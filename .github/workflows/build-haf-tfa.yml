@@ -32,7 +32,7 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v2
         with:
-          app-id: ${{ vars.PATINA_AUTOMATION_APPLICATION_ID }}
+          app-id: ${{ secrets.PATINA_AUTOMATION_APPLICATION_ID }}
           private-key: ${{ secrets.PATINA_AUTOMATION_APPLICATION_PRIVATE_KEY }}
           owner: ${{ github.repository_owner }}
 
