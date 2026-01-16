@@ -339,10 +339,7 @@ class PlatformBuilder(UefiBuilder, BuildSettingsManager):
 
         tool_chain_override_on_cmdline = any(arg.startswith("TOOL_CHAIN_TAG=") for arg in sys.argv)
         if not tool_chain_override_on_cmdline:
-            if os.name == 'nt':
-                self.env.SetValue("TOOL_CHAIN_TAG", "CLANGPDB", f"Default CLANGPDB toolchain based on host OS ({os.name})")
-            else:
-                self.env.SetValue("TOOL_CHAIN_TAG", "GCC5", f"Default GCC5 toolchain based on host OS ({os.name})")
+            self.env.SetValue("TOOL_CHAIN_TAG", "GCC5", f"Default GCC5 toolchain based on host OS ({os.name})")
 
         if self.Helper.generate_secureboot_pcds(self) != 0:
             logging.error("Failed to generate include PCDs")
@@ -1046,3 +1043,4 @@ if __name__ == "__main__":
     else:
         print("Running stuart_build -c " + SCRIPT_PATH)
         Edk2PlatformBuild().Invoke()
+
