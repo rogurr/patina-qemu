@@ -331,10 +331,16 @@ class PlatformBuilder(UefiBuilder, BuildSettingsManager):
         self.env.SetValue("MU_SCHEMA_FILE_NAME", "QemuSbsaPkgCfgData.xml", "Platform Hardcoded")
         self.env.SetValue("HAF_TFA_BUILD", "FALSE", "Platform Hardcoded")
 
+        # SBSA build on Windows is currently not supported
+        if os.name == 'nt':
+            logging.error("QEMU SBSA build on Windows is not currently supported")
+            logging.error("See issue: https://github.com/OpenDevicePartnership/patina-qemu/issues/121")
+            return -1
+
         tool_chain_override_on_cmdline = any(arg.startswith("TOOL_CHAIN_TAG=") for arg in sys.argv)
         if not tool_chain_override_on_cmdline:
             if os.name == 'nt':
-                self.env.SetValue("TOOL_CHAIN_TAG", "VS2022", f"Default VS2022 toolchain based on host OS ({os.name})")
+                self.env.SetValue("TOOL_CHAIN_TAG", "CLANGPDB", f"Default CLANGPDB toolchain based on host OS ({os.name})")
             else:
                 self.env.SetValue("TOOL_CHAIN_TAG", "GCC5", f"Default GCC5 toolchain based on host OS ({os.name})")
 
